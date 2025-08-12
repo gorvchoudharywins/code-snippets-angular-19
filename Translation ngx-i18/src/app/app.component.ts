@@ -10,7 +10,7 @@ import { CommonModule } from '@angular/common';
   styleUrl: './app.component.scss'
 })
 export class AppComponent implements OnInit {
-  title = 'translation-angular-19';
+  title = 'Translation';
 
   constructor(private translate: TranslateService) {}
 

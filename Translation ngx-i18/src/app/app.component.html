@@ -1,0 +1,28 @@
+<div class="container">
+  <header>
+    <h1>{{ 'TITLE' | translate }}</h1>
+    <p>{{ 'DESCRIPTION' | translate }}</p>
+  </header>
+
+  <div class="language-switcher">
+    <h3>{{ 'LANGUAGE' | translate }}:</h3>
+    <button (click)="switchLanguage('en')" class="lang-btn">English</button>
+    <button (click)="switchLanguage('es')" class="lang-btn">Español</button>
+    <button (click)="switchLanguage('fr')" class="lang-btn">Français</button>
+  </div>
+
+  <main>
+    <h2>{{ 'WELCOME' | translate }}</h2>
+    <p>{{ 'HELLO' | translate }}!</p>
+    
+    <nav>
+      <ul>
+        <li><a href="#">{{ 'HOME' | translate }}</a></li>
+        <li><a href="#">{{ 'ABOUT' | translate }}</a></li>
+        <li><a href="#">{{ 'CONTACT' | translate }}</a></li>
+      </ul>
+    </nav>
+  </main>
+</div>
+
+<router-outlet />

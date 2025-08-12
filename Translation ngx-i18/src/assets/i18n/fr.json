@@ -1,0 +1,10 @@
+{
+  "HELLO": "Bonjour",
+  "WELCOME": "Bienvenue dans notre application",
+  "LANGUAGE": "Langue",
+  "HOME": "Accueil",
+  "ABOUT": "À propos",
+  "CONTACT": "Contact",
+  "TITLE": "Démo de Traduction Angular",
+  "DESCRIPTION": "Il s'agit d'une application de démonstration montrant comment utiliser ngx-translate pour l'internationalisation."
+}

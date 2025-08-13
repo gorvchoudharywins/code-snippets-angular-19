@@ -1,47 +1,57 @@
-import { Directive, EventEmitter, Input, Output, Type, ViewContainerRef } from '@angular/core';
+import {
+  Directive,
+  EventEmitter,
+  inject,
+  Input,
+  Output,
+  Type,
+  ViewContainerRef,
+} from '@angular/core';
 import { InputFieldComponent } from '../../shared/components/input-field/input-field.component';
 import { RadioButtonComponent } from '../../shared/components/radio-button/radio-button.component';
 import { DropDownComponent } from '../../shared/components/drop-down/drop-down.component';
 import { FormGroup } from '@angular/forms';
 
-// interface configType {
-//   group: FormGroup,
-//   config: any
-// }
-
 const DYNAMIC_COMPONENT: { [type: string]: Type<any> } = {
   inputText: InputFieldComponent,
   radioButton: RadioButtonComponent,
-  dropdown: DropDownComponent
-}
+  dropdown: DropDownComponent,
+};
 
 @Directive({
-  selector: '[DynamicFormComponent]'
+  selector: '[DynamicFormComponent]',
 })
 export class DynamicFormComponentDirective {
-  @Input() group!: Type<FormGroup>;
+  private _componentCreator = inject(ViewContainerRef);
+
+  @Input() group!: FormGroup;
   @Input() config!: any;
   @Output() onChange = new EventEmitter();
   component!: any;
 
-  constructor(private componentCreator: ViewContainerRef) { }
-
   ngOnChanges(): void {
-    // debugger
-    // if (this.component) {
-    //   this.initializeComponent();
-    //   return;
-    // }
-    this.createComponent();
-  }
-
-  createComponent(): void {
-    this.component = this.componentCreator.createComponent(DYNAMIC_COMPONENT[this.config.type]);
     this.initializeComponent();
   }
 
-  initializeComponent() {
-    this.component.instance.group = this.group;
-    this.component.instance.config = this.config;
+  private initializeComponent() {
+    if (this.group && this.config.controlType === 'group') {
+      this.group.setControl(this.config.control, new FormGroup({}));
+      this.config.configs.forEach((config: any) => {
+        const componentType = DYNAMIC_COMPONENT[config.type];
+        if (componentType) {
+          this.component = this._componentCreator.createComponent(componentType);
+          this.component.instance.group =
+            this.group.controls[this.config.control];
+          this.component.instance.config = config;
+        }
+      });
+    } else if (this.group && this.config.controlType === 'control') {
+      const componentType = DYNAMIC_COMPONENT[this.config?.type];
+      if (componentType) {
+        this.component = this._componentCreator.createComponent(componentType);
+        this.component.instance.group = this.group;
+        this.component.instance.config = this.config;
+      }
+    }
   }
 }

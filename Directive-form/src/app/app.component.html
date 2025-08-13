@@ -3,30 +3,14 @@
   <h2 class="text-center">Register Form</h2>
 
   @for(config of configs; track $index){
-  <!-- Group Control -->
-  @if(config.heading) {
-  <div class="card">
-    <h1>{{ config.heading }}</h1>
-
-    <!-- Nested Group control  -->
-    @for(innerConfig of config.configs; track $index){
-    <ng-container
-      DynamicFormComponent
-      [config]="innerConfig"
-      [group]="dynamicForm.controls[config.control]"
-    >
-    </ng-container>
-    }
-  </div>
-  }
   <!-- Without Group Control -->
-  @else {
+  <!-- @else { -->
   <ng-container
     DynamicFormComponent
     [config]="config"
     [group]="dynamicForm"
   ></ng-container>
-  } }
+  } 
 
   <div class="flex justify-content-center mb-2 gap-3">
     <p-button

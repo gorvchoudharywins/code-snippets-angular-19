@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { HelperService } from './core/services/helper/helper.service';
 import { DynamicFormComponentDirective } from './core/directives/dynamic-form-component.directive';
@@ -22,11 +22,7 @@ export class AppComponent {
   configs: any[] = [];
 
   constructor(private _helper: HelperService, private fb: FormBuilder) {
-    this.dynamicForm = this.fb.group({
-      personalInformartion: new FormGroup({}),
-      localInformartion: new FormGroup({}),
-    });
-
+    this.dynamicForm = this.fb.group({});
     this.configs = this._helper.getRegisterFormConfig();
   }
 

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class HelperService {
   constructor() {}
@@ -11,6 +11,7 @@ export class HelperService {
       {
         heading: 'Personal information',
         control: 'personalInformartion',
+        controlType: 'group',
         configs: [
           {
             dataKey: 'firstname',
@@ -29,6 +30,7 @@ export class HelperService {
       {
         heading: 'Local information',
         control: 'localInformartion',
+        controlType: 'group',
         configs: [
           {
             dataKey: 'firstname',
@@ -45,6 +47,7 @@ export class HelperService {
         ],
       },
       {
+        controlType: 'control',
         dataKey: 'test',
         label: 'Test',
         type: 'inputText',

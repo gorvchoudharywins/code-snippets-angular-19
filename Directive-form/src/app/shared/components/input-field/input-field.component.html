@@ -15,10 +15,10 @@
     />
   </span>
 
-  <small
-    class="p-error text-left absolute top-100 left-0"
-    *ngIf="!control?.valid && control?.touched"
-  >
-    {{ validatorService.checkErrors(control, config.label) }}
-  </small>
+<small
+  class="input-error text-left mt-1"
+  *ngIf="!control?.valid && control?.touched"
+>
+  {{ validatorService.checkErrors(control, config.label) }}
+</small>
 </div>

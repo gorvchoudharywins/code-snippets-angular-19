@@ -7,12 +7,12 @@ import {
   Type,
   ViewContainerRef,
 } from '@angular/core';
+import { FormArray, FormGroup } from '@angular/forms';
 import { InputFieldComponent } from '../../shared/components/input-field/input-field.component';
 import { RadioButtonComponent } from '../../shared/components/radio-button/radio-button.component';
 import { DropDownComponent } from '../../shared/components/drop-down/drop-down.component';
-import { FormGroup, FormArray } from '@angular/forms';
 
-const DYNAMIC_COMPONENT: { [type: string]: Type<any> } = {
+const DYNAMIC_COMPONENT: Record<string, Type<any>> = {
   inputText: InputFieldComponent,
   radioButton: RadioButtonComponent,
   dropdown: DropDownComponent,
@@ -20,72 +20,94 @@ const DYNAMIC_COMPONENT: { [type: string]: Type<any> } = {
 
 @Directive({
   selector: '[DynamicFormComponent]',
+  exportAs: 'DynamicFormComponent',
 })
 export class DynamicFormComponentDirective {
   private _componentCreator = inject(ViewContainerRef);
 
   @Input() group!: FormGroup;
   @Input() config!: any;
-  @Output() onChange = new EventEmitter();
-  component!: ReturnType<ViewContainerRef['createComponent']>;
+  @Output() onChange = new EventEmitter<any>();
 
   ngOnChanges(): void {
-    if (this.group && this.config.controlType === 'group') {
-      this.handleGroupControl();
-    } else if (this.group && this.config.controlType === 'formArray') {
-      this.handleFormArrayControl();
-    } else if (this.group && this.config.controlType === 'control') {
-      this.handleSingleControl();
-    }
-  }
-  private handleFormArrayControl() {
-    this.group.setControl(this.config.control, new FormArray([]));
-    const formArray = this.group.get(this.config.control) as FormArray;
+    if (!this.group || !this.config) return;
+    this._componentCreator.clear();
 
-    if (formArray.length === 0) {
-      const group = new FormGroup({});
-      this.config.configs.forEach((config: any) => {
-        const componentType = DYNAMIC_COMPONENT[config.type];
-        if (componentType) {
-          this.createAndInitComponent(componentType, group, config);
-        }
-      });
-      formArray.push(group);
+    switch (this.config.controlType) {
+      case 'group':
+        this.handleGroupControl();
+        break;
+      case 'formArray':
+        this.handleFormArrayControl();
+        break;
+      case 'control':
+      default:
+        this.handleSingleControl();
+        break;
     }
   }
 
+  // for handling group form controls
   private handleGroupControl() {
-    this.group.setControl(this.config.control, new FormGroup({}));
+    this.group.addControl(this.config.control, new FormGroup({}));
+    const formGroup = this.group.controls[this.config.control] as FormGroup;
+
     this.config.configs.forEach((config: any) => {
-      const componentType = DYNAMIC_COMPONENT[config.type];
-      if (componentType) {
-        this.createAndInitComponent(
-          componentType,
-          this.group.controls[this.config.control] as FormGroup,
-          config
-        );
-      }
+      this.renderDynamicComponent(formGroup, config);
     });
   }
 
-  private handleSingleControl() {
-    const componentType = DYNAMIC_COMPONENT[this.config?.type];
-    if (componentType) {
-      this.createAndInitComponent(componentType, this.group, this.config);
+  // for handling single form controls
+  private handleSingleControl(): void {
+    this.renderDynamicComponent(this.group, this.config);
+  }
+
+  // for handling form array controls
+  private handleFormArrayControl(): void {
+    this.group.addControl(this.config.control, new FormArray([]));
+    const formArray = this.group.controls[this.config.control] as FormArray;
+
+    if (formArray.length === 0) {
+      formArray.push(new FormGroup({}));
+    }
+    for (let i = 0; i < formArray.length; i++) {
+      const item = formArray.at(i) as FormGroup;
+      for (const control of this.config.configs || []) {
+        this.renderDynamicComponent(item, control);
+      }
     }
   }
 
-  private createAndInitComponent(
-    componentType: Type<any>,
-    group: FormGroup,
-    config: any
-  ) {
-    this.component = this._componentCreator.createComponent(componentType);
-    const instance = this.component.instance as {
-      group: FormGroup;
-      config: any;
-    };
+  // for rendering dynamic components
+  private renderDynamicComponent(group: FormGroup, config: any): void {
+    const compType = DYNAMIC_COMPONENT[config.type];
+    if (!compType) return;
+    
+    const compRef = this._componentCreator.createComponent(compType);
+    const instance = compRef.instance as { group: FormGroup; config: any };
     instance.group = group;
     instance.config = config;
+  }
+
+  // for adding form array controls
+  addFormArrayControl(): void {
+    const formArray = this.group.controls[this.config?.control] as FormArray;
+    if (!formArray) return;
+
+    formArray.push(new FormGroup({}));
+    this._componentCreator.clear();
+    this.handleFormArrayControl();
+  }
+
+  // for removing form array controls based on the index
+  removeFormArrayControl(index: number): void {
+    const formArray = this.group.controls[this.config?.control] as FormArray;
+    if (!formArray) return;
+
+    if (index >= 0 && index < formArray.length) {
+      formArray.removeAt(index);
+      this._componentCreator.clear();
+      this.handleFormArrayControl();
+    }
   }
 }

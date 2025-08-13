@@ -27,7 +27,7 @@ export class DynamicFormComponentDirective {
   @Input() group!: FormGroup;
   @Input() config!: any;
   @Output() onChange = new EventEmitter();
-  component!: any;
+  component!: ReturnType<ViewContainerRef['createComponent']>;
 
   ngOnChanges(): void {
     if (this.group && this.config.controlType === 'group') {
@@ -64,7 +64,11 @@ export class DynamicFormComponentDirective {
     config: any
   ) {
     this.component = this._componentCreator.createComponent(componentType);
-    this.component.instance.group = group;
-    this.component.instance.config = config;
+    const instance = this.component.instance as {
+      group: FormGroup;
+      config: any;
+    };
+    instance.group = group;
+    instance.config = config;
   }
 }

@@ -1,0 +1,24 @@
+<div class="card flex justify-content-center mb-4 flex-column">
+  <label class="font-semibold mb-2" for="config.dataKey">{{
+    config.label
+  }}</label>
+
+  <span class="p-float-label w-full">
+    <input
+      pInputText
+      class="w-full"
+      [ngClass]="
+        !control?.valid && control?.touched ? 'ng-invalid ng-dirty' : ''
+      "
+      id="config.dataKey"
+      [formControl]="control"
+    />
+  </span>
+
+  <small
+    class="p-error text-left absolute top-100 left-0"
+    *ngIf="!control?.valid && control?.touched"
+  >
+    {{ validatorService.checkErrors(control, config.label) }}
+  </small>
+</div>

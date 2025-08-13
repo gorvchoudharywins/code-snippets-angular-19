@@ -1,0 +1,10 @@
+<div class="card flex justify-content-center mb-4 fullWidthDropdown flex-column">
+
+    <label class="font-semibold mb-2" for="config.dataKey">{{config.label}}</label>
+    <p-select [ngClass]="!control?.valid && control?.touched ? 'ng-invalid ng-dirty':''" class="w-full"
+        [formControl]="control" [options]="options" optionLabel="name" [placeholder]="config.placeholder"></p-select>
+
+    <small class="p-error text-left absolute top-100 left-0" *ngIf="!control?.valid && control?.touched">
+        {{validatorService.checkErrors(control,config.label)}}
+    </small>
+</div>

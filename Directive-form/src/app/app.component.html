@@ -1,22 +1,31 @@
 <h1>Dynamic Form With Directive</h1>
 <form [formGroup]="dynamicForm" class="mt-5">
   <h2 class="text-center">Register Form</h2>
-  <!-- Loop through the configs -->
-  <ng-container *ngFor="let control of configs">
-    <div *ngIf="control.heading; else noHeading">
-      <h1>{{ control.heading }}</h1>
-      <ng-container *ngFor="let innerConfig of control.configs">
-        <ng-container DynamicFormComponent [config]="innerConfig" [group]="dynamicForm.controls[control.control]"></ng-container>
+  <ng-container *ngFor="let config of configs">
+    <div *ngIf="config.heading" class="card">
+      <h1>{{ config.heading }}</h1>
+      <ng-container
+        DynamicFormComponent
+        *ngFor="let innerConfig of config.configs"
+        [config]="innerConfig"
+        [group]="dynamicForm.controls[config.control]"
+      >
       </ng-container>
     </div>
-    <ng-template #noHeading>
-      <ng-container *ngFor="let innerConfig of control.configs">
-        <ng-container DynamicFormComponent [config]="innerConfig" [group]="dynamicForm.controls[control.control]"></ng-container>
-      </ng-container>
-    </ng-template>
+    <div *ngIf="!config.heading" class="card">
+      <ng-container
+        DynamicFormComponent
+        [config]="config"
+        [group]="dynamicForm"
+      ></ng-container>
+    </div>
   </ng-container>
 
   <div class="flex justify-content-center mb-2 gap-3">
-    <p-button label="Submit" (click)="submit()" />
+    <p-button
+      styleClass="p-button-raised p-button-text p-button-info"
+      (click)="submit()"
+      >Submit</p-button
+    >
   </div>
 </form>

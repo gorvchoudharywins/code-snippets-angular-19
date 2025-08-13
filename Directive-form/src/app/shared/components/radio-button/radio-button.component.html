@@ -1,1 +1,18 @@
-<p>radio-button works!</p>
+<div class="card flex mb-4 flex-column">
+    <label class="font-semibold mb-2">{{config.label}}</label>
+
+    <div class="flex gap-4">
+        @for(option of options; track $index){
+            <div class="field-checkbox mb-0">
+                <label [for]="option.key" class="mr-2 ml-0">{{ option.name }}</label>
+                <p-radiobutton [ngClass]="!control?.valid && control?.touched ? 'ng-invalid ng-dirty':''"
+                    [inputId]="option.key" [value]="option" [formControl]="control"></p-radiobutton>
+            </div>
+        }
+    </div>
+
+    <small class="p-error text-left absolute top-100 left-0" *ngIf="!control?.valid && control?.touched">
+        {{validatorService.checkErrors(control,config.label)}}
+    </small>
+
+</div>

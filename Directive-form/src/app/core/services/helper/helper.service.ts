@@ -53,6 +53,25 @@ export class HelperService {
         type: 'inputText',
         validations: { required: true },
       },
+     {
+        heading: 'Form Array',
+        control: 'formArray',
+        controlType: 'formArray',
+        configs: [
+          {
+            dataKey: 'first',
+            label: 'First',
+            type: 'inputText',
+            validations: { required: true },
+          },
+          {
+            dataKey: 'last',
+            label: 'Last',
+            type: 'inputText',
+            validations: { required: true },
+          },
+        ],
+      },
     ];
   }
 

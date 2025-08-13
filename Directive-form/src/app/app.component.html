@@ -2,15 +2,28 @@
 <form [formGroup]="dynamicForm" class="mt-5">
   <h2 class="text-center">Register Form</h2>
 
-  @for(config of configs; track $index){
-  <!-- Without Group Control -->
-  <!-- @else { -->
-  <ng-container
-    DynamicFormComponent
-    [config]="config"
-    [group]="dynamicForm"
-  ></ng-container>
-  } 
+  @for (config of configs; track $index) {
+    @if (config.controlType === 'formArray') {
+      <ng-container
+        DynamicFormComponent
+        [config]="config"
+        [group]="dynamicForm"
+        #formDir="DynamicFormComponent"
+      ></ng-container>
+      <button type="button" (click)="formDir.addFormArrayControl()">Add Item</button>
+      @if (dynamicForm.get(config.control); as arr) {
+        @for (item of arr.controls; track $index) {
+          <button type="button" (click)="formDir.removeFormArrayControl($index)">Remove</button>
+        }
+      }
+    } @else {
+      <ng-container
+        DynamicFormComponent
+        [config]="config"
+        [group]="dynamicForm"
+      ></ng-container>
+    }
+  }
 
   <div class="flex justify-content-center mb-2 gap-3">
     <p-button

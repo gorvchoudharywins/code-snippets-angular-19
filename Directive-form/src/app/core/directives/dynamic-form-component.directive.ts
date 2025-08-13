@@ -30,28 +30,41 @@ export class DynamicFormComponentDirective {
   component!: any;
 
   ngOnChanges(): void {
-    this.initializeComponent();
+    if (this.group && this.config.controlType === 'group') {
+      this.handleGroupControl();
+    } else if (this.group && this.config.controlType === 'control') {
+      this.handleSingleControl();
+    }
   }
 
-  private initializeComponent() {
-    if (this.group && this.config.controlType === 'group') {
-      this.group.setControl(this.config.control, new FormGroup({}));
-      this.config.configs.forEach((config: any) => {
-        const componentType = DYNAMIC_COMPONENT[config.type];
-        if (componentType) {
-          this.component = this._componentCreator.createComponent(componentType);
-          this.component.instance.group =
-            this.group.controls[this.config.control];
-          this.component.instance.config = config;
-        }
-      });
-    } else if (this.group && this.config.controlType === 'control') {
-      const componentType = DYNAMIC_COMPONENT[this.config?.type];
+  private handleGroupControl() {
+    this.group.setControl(this.config.control, new FormGroup({}));
+    this.config.configs.forEach((config: any) => {
+      const componentType = DYNAMIC_COMPONENT[config.type];
       if (componentType) {
-        this.component = this._componentCreator.createComponent(componentType);
-        this.component.instance.group = this.group;
-        this.component.instance.config = this.config;
+        this.createAndInitComponent(
+          componentType,
+          this.group.controls[this.config.control] as FormGroup,
+          config
+        );
       }
+    });
+  }
+
+  private handleSingleControl() {
+    const componentType = DYNAMIC_COMPONENT[this.config?.type];
+    if (componentType) {
+      this.createAndInitComponent(componentType, this.group, this.config);
     }
+  }
+
+  private createAndInitComponent(
+    componentType: Type<any>,
+    group: FormGroup,
+    config: any
+  ) {
+    this.component = this._componentCreator.createComponent(componentType);
+    this.component.instance.group = group;
+    this.component.instance.config = config;
   }
 }

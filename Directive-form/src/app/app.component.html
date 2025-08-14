@@ -2,28 +2,40 @@
 <form [formGroup]="dynamicForm" class="mt-5">
   <h2 class="text-center">Register Form</h2>
 
-  @for (config of configs; track $index) {
-    @if (config.controlType === 'formArray') {
-      <ng-container
-        DynamicFormComponent
-        [config]="config"
-        [group]="dynamicForm"
-        #formDir="DynamicFormComponent"
-      ></ng-container>
-      <button type="button" (click)="formDir.addFormArrayControl()">Add Item</button>
-      @if (dynamicForm.get(config.control); as arr) {
-        @for (item of arr.controls; track $index) {
-          <button type="button" (click)="formDir.removeFormArrayControl($index)">Remove</button>
-        }
-      }
-    } @else {
-      <ng-container
-        DynamicFormComponent
-        [config]="config"
-        [group]="dynamicForm"
-      ></ng-container>
-    }
-  }
+  @for (config of configs; track $index) { @if (config.controlType ===
+  'formArray') {
+  <ng-container
+    DynamicFormComponent
+    [config]="config"
+    [group]="dynamicForm"
+    #formDir="DynamicFormComponent"
+  ></ng-container>
+  @if (dynamicForm.get(config.control); as arr) { @for (item of arr.controls;
+  track $index) {
+          <div class="flex justify-content-end mb-2 w-full">
+            <p-button
+              label="Remove"
+              icon="pi pi-trash"
+              styleClass="p-button-text p-button-danger p-button-sm"
+              (click)="formDir.removeFormArrayControl($index)"
+            ></p-button>
+          </div>
+  } 
+      <div class="flex justify-content-end mb-2">
+        <p-button
+          label="Add Item"
+          icon="pi pi-plus"
+          styleClass="p-button-sm p-button-success"
+          (click)="formDir.addFormArrayControl()"
+        ></p-button>
+      </div>
+   } } @else {
+  <ng-container
+    DynamicFormComponent
+    [config]="config"
+    [group]="dynamicForm"
+  ></ng-container>
+  } }
 
   <div class="flex justify-content-center mb-2 gap-3">
     <p-button

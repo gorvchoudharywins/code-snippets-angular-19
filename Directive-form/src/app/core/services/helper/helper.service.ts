@@ -47,13 +47,25 @@ export class HelperService {
         ],
       },
       {
+        dataKey: 'city',
+        label: 'City',
+        type: 'dropdown',
+        placeholder: `Choose a City`,
+        validations: { required: true },
+        options: [
+          { name: 'Chandigarh', code: 'ch' },
+          { name: 'Panchkula', code: 'pk' },
+          { name: 'Zirkpur', code: 'zk' },
+        ],
+      },
+      {
         controlType: 'control',
         dataKey: 'test',
         label: 'Test',
         type: 'inputText',
         validations: { required: true },
       },
-     {
+      {
         heading: 'Form Array',
         control: 'formArray',
         controlType: 'formArray',
@@ -70,29 +82,6 @@ export class HelperService {
             type: 'inputText',
             validations: { required: true },
           },
-        ],
-      },
-    ];
-  }
-
-  getdynamicFormConfig() {
-    return [
-      {
-        dataKey: 'Username',
-        label: 'Username',
-        type: 'inputText',
-        validations: { required: true },
-      },
-      {
-        dataKey: 'city',
-        label: 'City',
-        type: 'dropdown',
-        placeholder: `Choose a City`,
-        validations: { required: true },
-        options: [
-          { name: 'Chandigarh', code: 'ch' },
-          { name: 'Panchkula', code: 'pk' },
-          { name: 'Zirkpur', code: 'zk' },
         ],
       },
       {
